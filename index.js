@@ -1,27 +1,22 @@
 const path = require('path');
+const windowConfig = require('./app/config');
+const MainWindow = require('./app/MainWindow');
 const TimerTray = require('./app/TimerTray');
-const { app, BrowserWindow } = require('electron');
+const { app } = require('electron');
+
+// path
+const srcRoot = path.join(__dirname, 'src');
 
 let mainWindow;
 let tray;
 
 app.on('ready', () => {
-  app.dock.hide();
-  mainWindow = new BrowserWindow({
-    width: 300,
-    height: 500,
-    resizable: false,
-    show: false,
-    frame: false,
+  app.dock.hide(); // hide app from dock on Mac OS
+  mainWindow = new MainWindow({
+    options: windowConfig.mainWindow.options,
+    url: `file://${srcRoot}/index.html`,
   });
-  mainWindow.loadURL(`file://${__dirname}/src/index.html`);
-  mainWindow.on('blur', () => mainWindow.hide());
-
-  // tray icon path
-  const iconName = process.platform === 'win32' ? 'windows-icon.png' : 'iconTemplate.png';
-  const iconPath = path.join(__dirname, `src/assets/${iconName}`);
-  tray = new TimerTray(iconPath, mainWindow);
-  // directly new without variable has garbage collection issue
+  tray = new TimerTray(`${srcRoot}/assets/${windowConfig.timerTray.iconName}`, mainWindow);
 });
 
 app.on('closed', () => app.quit());
