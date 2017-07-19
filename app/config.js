@@ -6,6 +6,9 @@ module.exports = {
       resizable: false,
       show: false,
       frame: false,
+      webPreferences: {
+        backgroundThrottling: false,
+      },
     },
   },
   timerTray: {

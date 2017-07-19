@@ -2,7 +2,7 @@ const path = require('path');
 const windowConfig = require('./app/config');
 const MainWindow = require('./app/MainWindow');
 const TimerTray = require('./app/TimerTray');
-const { app } = require('electron');
+const { app, ipcMain } = require('electron');
 
 // path
 const srcRoot = path.join(__dirname, 'src');
@@ -20,3 +20,7 @@ app.on('ready', () => {
 });
 
 app.on('closed', () => app.quit());
+
+ipcMain.on('update-timer', (evt, timeTitle) => {
+  tray.setTitle(timeTitle);
+});
