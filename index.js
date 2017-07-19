@@ -6,6 +6,7 @@ let mainWindow;
 let tray;
 
 app.on('ready', () => {
+  app.dock.hide();
   mainWindow = new BrowserWindow({
     width: 300,
     height: 500,
@@ -14,12 +15,13 @@ app.on('ready', () => {
     frame: false,
   });
   mainWindow.loadURL(`file://${__dirname}/src/index.html`);
+  mainWindow.on('blur', () => mainWindow.hide());
 
   // tray icon path
   const iconName = process.platform === 'win32' ? 'windows-icon.png' : 'iconTemplate.png';
   const iconPath = path.join(__dirname, `src/assets/${iconName}`);
   tray = new TimerTray(iconPath, mainWindow);
-  mainWindow.on('blur', () => mainWindow.hide());
+  // directly new without variable has garbage collection issue
 });
 
 app.on('closed', () => app.quit());
